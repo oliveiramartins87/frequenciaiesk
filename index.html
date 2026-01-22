@@ -6,140 +6,205 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --azul: #1e3a8a;
+  --azul-claro: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #1e3a8a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--azul), var(--azul-claro));
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
 }
 
 .box {
   background: #fff;
-  max-width: 700px;
+  max-width: 520px;
   width: 100%;
-  padding: 30px;
-  border-radius: 16px;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+  animation: fadeIn .4s ease;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.termo {
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  border-radius: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
 }
 
 input {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin: 8px 0;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  background: #1e3a8a;
+  padding: 15px;
+  background: var(--azul);
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 16px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):active {
+  transform: scale(.98);
+}
+
+/* TELA DE ENVIO */
+.loading,
+.sucesso {
+  text-align: center;
+  display: none;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #e5e7eb;
+  border-top: 6px solid var(--azul);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 30px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="box" id="formBox">
+
   <h2>📄 Termo de Ciência de Frequência Escolar</h2>
 
-  <!-- TERMO VISÍVEL -->
-  <div style="
-    border: 1px solid #ddd;
-    padding: 15px;
-    max-height: 220px;
-    overflow-y: auto;
-    margin-bottom: 15px;
-    font-size: 14px;
-    line-height: 1.6;
-  ">
+  <div class="termo">
     <p>
       Eu, responsável legal pelo(a) aluno(a), declaro que estou ciente da
       frequência escolar, bem como das faltas e/ou ausências registradas até a
-      presente data, conforme controle realizado pela unidade escolar.
+      presente data.
     </p>
-
     <p>
-      Declaro ainda que estou ciente das normas internas da escola e da legislação
-      educacional vigente, especialmente no que se refere à frequência mínima
-      obrigatória.
+      Estou ciente das normas da instituição e da legislação educacional vigente,
+      especialmente quanto à frequência mínima obrigatória.
     </p>
-
     <p>
-      Estou ciente de que a manutenção do aluno em condição de infrequência poderá
-      acarretar encaminhamento ao Conselho Tutelar, reprovação por insuficiência
-      de frequência e perda ou cancelamento de matrícula, conforme legislação
-      vigente.
+      A manutenção do aluno em condição de infrequência poderá acarretar
+      encaminhamento ao Conselho Tutelar, reprovação por insuficiência de
+      frequência e cancelamento de matrícula.
     </p>
-
     <p>
-      Este termo é aceito de forma digital, com registro de data, hora e endereço
-      IP do dispositivo utilizado.
+      Este termo é aceito digitalmente, com registro de data, hora e dispositivo.
     </p>
   </div>
 
-  <!-- DADOS -->
   <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
-<input id="turma" placeholder="Turma" oninput="validar()">
-<input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
-<input id="cpf" placeholder="CPF do responsável (opcional)" oninput="validar()">
+  <input id="turma" placeholder="Turma" oninput="validar()">
+  <input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
+  <input id="cpf" placeholder="CPF do responsável (opcional)">
 
-  <!-- CIÊNCIA -->
-  <label style="display:block;margin-top:10px">
+  <label>
     <input type="checkbox" id="ciente" onchange="validar()">
     Li e estou ciente do termo acima
   </label>
 
-  <br>
-
-  <!-- BOTÃO TRAVADO -->
   <button id="btnEnviar" onclick="enviar()" disabled>
     Confirmar Ciência
   </button>
+</div>
 
-  <p id="msg"></p>
+<!-- LOADING -->
+<div class="box loading" id="loadingBox">
+  <div class="spinner"></div>
+  <p>Enviando documento…</p>
+</div>
+
+<!-- SUCESSO -->
+<div class="box sucesso" id="sucessoBox">
+  <h2>✅ Documento enviado!</h2>
+  <p>O termo foi registrado com sucesso no sistema da escola.</p>
 </div>
 
 <script>
 const URL_API = "https://script.google.com/macros/s/AKfycbzNCJOPfc5DreE9i8kBubiuzprQax3LaO1heGdBCk6fClTHQ53fX_TOujPH42mT0EbaIA/exec";
 
+function validar() {
+  btnEnviar.disabled = !(
+    aluno.value.trim() &&
+    turma.value.trim() &&
+    responsavel.value.trim() &&
+    ciente.checked
+  );
+}
+
 function enviar() {
-  if (!ciente.checked) {
-    alert("Confirme a ciência.");
-    return;
-  }
+  document.getElementById("formBox").style.display = "none";
+  document.getElementById("loadingBox").style.display = "block";
 
   const params = new URLSearchParams({
-  aluno: aluno.value,
-  turma: turma.value,
-  responsavel: responsavel.value,
-  cpf: cpf.value,
-  dispositivo: navigator.userAgent
-});
+    aluno: aluno.value,
+    turma: turma.value,
+    responsavel: responsavel.value,
+    cpf: cpf.value,
+    dispositivo: navigator.userAgent
+  });
 
-  // 🔴 AQUI ESTÁ A MUDANÇA CHAVE
-  // Redireciona o navegador para o Apps Script
-  window.location.href = URL_API + "?" + params.toString();
-}
-</script>
-<script>
-function validar() {
-  const ok =
-    aluno.value.trim() !== "" &&
-    turma.value.trim() !== "" &&
-    responsavel.value.trim() !== "" &&
-    ciente.checked;
-
-  document.getElementById("btnEnviar").disabled = !ok;
+  setTimeout(() => {
+    window.location.href = URL_API + "?" + params.toString();
+  }, 1200);
 }
 </script>
 
 </body>
 </html>
+
 
 
 
