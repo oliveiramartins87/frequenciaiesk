@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Termo de Ciência de Frequência</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #1e3a8a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.box {
+  background: #fff;
+  max-width: 700px;
+  width: 100%;
+  padding: 30px;
+  border-radius: 16px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Termo de Ciência de Frequência Escolar</h2>
+
+  <input id="aluno" placeholder="Nome do aluno">
+  <input id="turma" placeholder="Turma">
+  <input id="responsavel" placeholder="Nome do responsável">
+  <input id="cpf" placeholder="CPF (opcional)">
+
+  <label>
+    <input type="checkbox" id="ciente">
+    Declaro que li e estou ciente do termo.
+  </label>
+
+  <br><br>
+
+  <button onclick="enviar()">Confirmar Ciência</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+const URL_API = "https://script.google.com/macros/s/AKfycbydZxf0p6O9iG3Ynm8alJDAq_u4fwcgJIHU3GmFtu-ij9l0ps-qiLa0wjdL-XmDWYLKrQ/exec";
+
+function enviar() {
+  if (!ciente.checked) {
+    alert("Confirme a ciência.");
+    return;
+  }
+
+  msg.textContent = "Enviando...";
+
+  fetch(URL_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      aluno: aluno.value,
+      turma: turma.value,
+      responsavel: responsavel.value,
+      cpf: cpf.value
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.erro) {
+      msg.textContent = "❌ Erro: " + d.erro;
+    } else {
+      msg.innerHTML =
+        "✅ Termo registrado.<br>" +
+        "<a href='" + d.pdf + "' target='_blank'>Abrir PDF</a>";
+    }
+  })
+  .catch(err => {
+    msg.textContent = "❌ Erro ao enviar.";
+    console.error(err);
+  });
+}
+</script>
+
+</body>
+</html>
