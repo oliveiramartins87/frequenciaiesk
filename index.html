@@ -83,10 +83,10 @@ button {
   </div>
 
   <!-- DADOS -->
-  <input id="aluno" placeholder="Nome do aluno">
-  <input id="turma" placeholder="Turma">
-  <input id="responsavel" placeholder="Nome do responsável">
-  <input id="cpf" placeholder="CPF do responsável (opcional)">
+  <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
+<input id="turma" placeholder="Turma" oninput="validar()">
+<input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
+<input id="cpf" placeholder="CPF do responsável (opcional)" oninput="validar()">
 
   <!-- CIÊNCIA -->
   <label style="display:block;margin-top:10px">
@@ -125,9 +125,21 @@ function enviar() {
   window.location.href = URL_API + "?" + params.toString();
 }
 </script>
+<script>
+function validar() {
+  const ok =
+    aluno.value.trim() !== "" &&
+    turma.value.trim() !== "" &&
+    responsavel.value.trim() !== "" &&
+    ciente.checked;
+
+  document.getElementById("btnEnviar").disabled = !ok;
+}
+</script>
 
 </body>
 </html>
+
 
 
 
