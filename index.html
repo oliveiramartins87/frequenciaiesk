@@ -73,8 +73,6 @@ function enviar() {
     return;
   }
 
-  msg.textContent = "Enviando...";
-
   const params = new URLSearchParams({
     aluno: aluno.value,
     turma: turma.value,
@@ -82,26 +80,15 @@ function enviar() {
     cpf: cpf.value
   });
 
-  fetch(URL_API + "?" + params.toString())
-    .then(r => r.json())
-    .then(d => {
-      if (d.erro) {
-        msg.textContent = "❌ Erro: " + d.erro;
-      } else {
-        msg.innerHTML =
-          "✅ Termo registrado.<br>" +
-          "<a href='" + d.pdf + "' target='_blank'>Abrir PDF</a>";
-      }
-    })
-    .catch(err => {
-      msg.textContent = "❌ Erro ao enviar.";
-      console.error(err);
-    });
+  // 🔴 AQUI ESTÁ A MUDANÇA CHAVE
+  // Redireciona o navegador para o Apps Script
+  window.location.href = URL_API + "?" + params.toString();
 }
 </script>
 
 </body>
 </html>
+
 
 
 
