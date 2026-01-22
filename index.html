@@ -105,7 +105,7 @@ button {
 </div>
 
 <script>
-const URL_API = "https://script.google.com/macros/s/AKfycbwQj-zSmD8OM_6T8_5qAHlecGOzkw1bJvv_tPC_XkoSo1JOBlO8nrldlpHyXereBAotvw/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbyNWw8pOEPqlDI0l0g97xPgpPKCnCmFCJVKwf4sIQmP0nlQ5edaPZOP6T5zrq2HD4ySDQ/exec";
 
 function enviar() {
   if (!ciente.checked) {
@@ -114,11 +114,12 @@ function enviar() {
   }
 
   const params = new URLSearchParams({
-    aluno: aluno.value,
-    turma: turma.value,
-    responsavel: responsavel.value,
-    cpf: cpf.value
-  });
+  aluno: aluno.value,
+  turma: turma.value,
+  responsavel: responsavel.value,
+  cpf: cpf.value,
+  dispositivo: navigator.userAgent
+});
 
   // 🔴 AQUI ESTÁ A MUDANÇA CHAVE
   // Redireciona o navegador para o Apps Script
@@ -139,6 +140,7 @@ function validar() {
 
 </body>
 </html>
+
 
 
 
