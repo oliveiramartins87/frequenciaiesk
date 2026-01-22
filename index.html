@@ -11,9 +11,7 @@
   --azul-claro: #3b82f6;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -36,10 +34,7 @@ body {
   animation: fadeIn .4s ease;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 15px;
-}
+h2 { text-align: center; }
 
 .termo {
   border: 1px solid #e5e7eb;
@@ -58,15 +53,13 @@ input {
   margin: 8px 0;
   border-radius: 12px;
   border: 1px solid #d1d5db;
-  font-size: 15px;
 }
 
 label {
   display: flex;
-  align-items: center;
   gap: 8px;
-  font-size: 14px;
   margin-top: 10px;
+  font-size: 14px;
 }
 
 button {
@@ -78,24 +71,13 @@ button {
   border-radius: 14px;
   font-size: 16px;
   margin-top: 15px;
-  cursor: pointer;
-  transition: .2s;
 }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
+button:disabled { opacity: .6; }
 
-button:not(:disabled):active {
-  transform: scale(.98);
-}
-
-/* TELA DE ENVIO */
-.loading,
-.sucesso {
-  text-align: center;
+.loading, .sucesso {
   display: none;
+  text-align: center;
 }
 
 .spinner {
@@ -108,10 +90,7 @@ button:not(:disabled):active {
   margin: 30px auto;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -121,38 +100,24 @@ button:not(:disabled):active {
 
 <body>
 
+<!-- FORMULÁRIO -->
 <div class="box" id="formBox">
-
   <h2>📄 Termo de Ciência de Frequência Escolar</h2>
 
   <div class="termo">
-    <p>
-      Eu, responsável legal pelo(a) aluno(a), declaro que estou ciente da
-      frequência escolar, bem como das faltas e/ou ausências registradas até a
-      presente data.
-    </p>
-    <p>
-      Estou ciente das normas da instituição e da legislação educacional vigente,
-      especialmente quanto à frequência mínima obrigatória.
-    </p>
-    <p>
-      A manutenção do aluno em condição de infrequência poderá acarretar
-      encaminhamento ao Conselho Tutelar, reprovação por insuficiência de
-      frequência e cancelamento de matrícula.
-    </p>
-    <p>
-      Este termo é aceito digitalmente, com registro de data, hora e dispositivo.
-    </p>
+    <p>Declaro ciência da frequência escolar do(a) aluno(a).</p>
+    <p>Estou ciente das normas da instituição e da legislação vigente.</p>
+    <p>O descumprimento poderá acarretar encaminhamento ao Conselho Tutelar.</p>
+    <p>Este termo é aceito digitalmente.</p>
   </div>
 
   <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
   <input id="turma" placeholder="Turma" oninput="validar()">
   <input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
-  <input id="cpf" placeholder="CPF do responsável (opcional)">
+  <input id="cpf" placeholder="CPF (opcional)">
 
   <label>
-    <input type="checkbox" id="ciente" onchange="validar()">
-    Li e estou ciente do termo acima
+    <input type="checkbox" id="ciente" onchange="validar()"> Li e estou ciente
   </label>
 
   <button id="btnEnviar" onclick="enviar()" disabled>
@@ -168,13 +133,14 @@ button:not(:disabled):active {
 
 <!-- SUCESSO -->
 <div class="box sucesso" id="sucessoBox">
-  <h2>✅ Documento enviado!</h2>
-  <p>O termo foi registrado com sucesso no sistema da escola.</p>
+  <h2>✅ Documento enviado com sucesso</h2>
+  <p>O termo foi registrado no sistema da escola.</p>
 </div>
 
 <script>
 const URL_API = "https://script.google.com/macros/s/AKfycbzNCJOPfc5DreE9i8kBubiuzprQax3LaO1heGdBCk6fClTHQ53fX_TOujPH42mT0EbaIA/exec";
 
+/* VALIDA CAMPOS */
 function validar() {
   btnEnviar.disabled = !(
     aluno.value.trim() &&
@@ -184,9 +150,15 @@ function validar() {
   );
 }
 
+/* ENVIO + BLOQUEIO */
 function enviar() {
-  document.getElementById("formBox").style.display = "none";
-  document.getElementById("loadingBox").style.display = "block";
+
+  // 🔒 marca como enviado
+  sessionStorage.setItem("termoEnviado", "true");
+
+  // troca telas
+  formBox.style.display = "none";
+  loadingBox.style.display = "block";
 
   const params = new URLSearchParams({
     aluno: aluno.value,
@@ -197,13 +169,33 @@ function enviar() {
   });
 
   setTimeout(() => {
+    loadingBox.style.display = "none";
+    sucessoBox.style.display = "block";
+
+    // bloqueia botão voltar
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => history.go(1);
+
+    // envia para o Apps Script
     window.location.href = URL_API + "?" + params.toString();
+
   }, 1200);
+}
+
+/* SE JÁ FOI ENVIADO */
+if (sessionStorage.getItem("termoEnviado") === "true") {
+  formBox.style.display = "none";
+  loadingBox.style.display = "none";
+  sucessoBox.style.display = "block";
+
+  history.pushState(null, null, location.href);
+  window.onpopstate = () => history.go(1);
 }
 </script>
 
 </body>
 </html>
+
 
 
 
