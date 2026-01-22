@@ -45,21 +45,61 @@ button {
 <body>
 
 <div class="box">
-  <h2>Termo de Ciência de Frequência Escolar</h2>
+  <h2>📄 Termo de Ciência de Frequência Escolar</h2>
 
+  <!-- TERMO VISÍVEL -->
+  <div style="
+    border: 1px solid #ddd;
+    padding: 15px;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.6;
+  ">
+    <p>
+      Eu, responsável legal pelo(a) aluno(a), declaro que estou ciente da
+      frequência escolar, bem como das faltas e/ou ausências registradas até a
+      presente data, conforme controle realizado pela unidade escolar.
+    </p>
+
+    <p>
+      Declaro ainda que estou ciente das normas internas da escola e da legislação
+      educacional vigente, especialmente no que se refere à frequência mínima
+      obrigatória.
+    </p>
+
+    <p>
+      Estou ciente de que a manutenção do aluno em condição de infrequência poderá
+      acarretar encaminhamento ao Conselho Tutelar, reprovação por insuficiência
+      de frequência e perda ou cancelamento de matrícula, conforme legislação
+      vigente.
+    </p>
+
+    <p>
+      Este termo é aceito de forma digital, com registro de data, hora e endereço
+      IP do dispositivo utilizado.
+    </p>
+  </div>
+
+  <!-- DADOS -->
   <input id="aluno" placeholder="Nome do aluno">
   <input id="turma" placeholder="Turma">
   <input id="responsavel" placeholder="Nome do responsável">
-  <input id="cpf" placeholder="CPF (opcional)">
+  <input id="cpf" placeholder="CPF do responsável (opcional)">
 
-  <label>
-    <input type="checkbox" id="ciente">
-    Declaro que li e estou ciente do termo.
+  <!-- CIÊNCIA -->
+  <label style="display:block;margin-top:10px">
+    <input type="checkbox" id="ciente" onchange="validar()">
+    Li e estou ciente do termo acima
   </label>
 
-  <br><br>
+  <br>
 
-  <button onclick="enviar()">Confirmar Ciência</button>
+  <!-- BOTÃO TRAVADO -->
+  <button id="btnEnviar" onclick="enviar()" disabled>
+    Confirmar Ciência
+  </button>
 
   <p id="msg"></p>
 </div>
@@ -88,6 +128,7 @@ function enviar() {
 
 </body>
 </html>
+
 
 
 
