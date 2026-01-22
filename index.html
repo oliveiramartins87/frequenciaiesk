@@ -10,9 +10,7 @@
   --azul: #1e3a8a;
   --azul-claro: #3b82f6;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -23,7 +21,6 @@ body {
   justify-content: center;
   padding: 15px;
 }
-
 .box {
   background: #fff;
   max-width: 520px;
@@ -31,11 +28,8 @@ body {
   padding: 22px;
   border-radius: 18px;
   box-shadow: 0 20px 40px rgba(0,0,0,.2);
-  animation: fadeIn .4s ease;
 }
-
 h2 { text-align: center; }
-
 .termo {
   border: 1px solid #e5e7eb;
   padding: 14px;
@@ -46,7 +40,6 @@ h2 { text-align: center; }
   line-height: 1.6;
   margin-bottom: 15px;
 }
-
 input {
   width: 100%;
   padding: 14px;
@@ -54,14 +47,12 @@ input {
   border-radius: 12px;
   border: 1px solid #d1d5db;
 }
-
 label {
   display: flex;
   gap: 8px;
   margin-top: 10px;
   font-size: 14px;
 }
-
 button {
   width: 100%;
   padding: 15px;
@@ -72,14 +63,11 @@ button {
   font-size: 16px;
   margin-top: 15px;
 }
-
 button:disabled { opacity: .6; }
-
 .loading, .sucesso {
   display: none;
   text-align: center;
 }
-
 .spinner {
   width: 60px;
   height: 60px;
@@ -89,46 +77,26 @@ button:disabled { opacity: .6; }
   animation: spin 1s linear infinite;
   margin: 30px auto;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 </style>
 </head>
 
 <body>
 
-<!-- FORMULÁRIO -->
+<!-- FORM -->
 <div class="box" id="formBox">
   <h2>📄 Termo de Ciência de Frequência Escolar</h2>
 
   <div class="termo">
-  <p>
-    Eu, responsável legal pelo(a) aluno(a), declaro que estou ciente da
-    frequência escolar, bem como das faltas e/ou ausências registradas até a
-    presente data.
-  </p>
-
-  <p>
-    Estou ciente das normas da instituição e da legislação educacional vigente,
-    especialmente no que se refere à frequência mínima obrigatória.
-  </p>
-
-  <p>
-    <strong>
+    <p>Declaro ciência da frequência escolar do(a) aluno(a).</p>
+    <p>Estou ciente das normas da instituição e da legislação vigente.</p>
+    <p><strong>
       Estou ciente de que a permanência do aluno em condição de infrequência
       poderá acarretar encaminhamento ao Conselho Tutelar, reprovação por
       insuficiência de frequência e cancelamento de matrícula.
-    </strong>
-  </p>
-
-  <p>
-    Este termo é aceito digitalmente, com registro de data, hora e dispositivo.
-  </p>
-</div>
-
+    </strong></p>
+    <p>Este termo é aceito digitalmente.</p>
+  </div>
 
   <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
   <input id="turma" placeholder="Turma" oninput="validar()">
@@ -159,7 +127,13 @@ button:disabled { opacity: .6; }
 <script>
 const URL_API = "https://script.google.com/macros/s/AKfycbzNCJOPfc5DreE9i8kBubiuzprQax3LaO1heGdBCk6fClTHQ53fX_TOujPH42mT0EbaIA/exec";
 
-/* VALIDA CAMPOS */
+/* BLOQUEIO GLOBAL */
+function bloquearVoltar() {
+  history.replaceState(null, null, location.href);
+  window.onpopstate = () => history.go(1);
+}
+
+/* VALIDA */
 function validar() {
   btnEnviar.disabled = !(
     aluno.value.trim() &&
@@ -169,13 +143,12 @@ function validar() {
   );
 }
 
-/* ENVIO + BLOQUEIO */
+/* ENVIO */
 function enviar() {
 
-  // 🔒 marca como enviado
   sessionStorage.setItem("termoEnviado", "true");
+  bloquearVoltar();
 
-  // troca telas
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
@@ -190,30 +163,22 @@ function enviar() {
   setTimeout(() => {
     loadingBox.style.display = "none";
     sucessoBox.style.display = "block";
-
-    // bloqueia botão voltar
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => history.go(1);
-
-    // envia para o Apps Script
+    bloquearVoltar();
     window.location.href = URL_API + "?" + params.toString();
-
   }, 1200);
 }
 
-/* SE JÁ FOI ENVIADO */
+/* AO CARREGAR */
 if (sessionStorage.getItem("termoEnviado") === "true") {
   formBox.style.display = "none";
-  loadingBox.style.display = "none";
   sucessoBox.style.display = "block";
-
-  history.pushState(null, null, location.href);
-  window.onpopstate = () => history.go(1);
+  bloquearVoltar();
 }
 </script>
 
 </body>
 </html>
+
 
 
 
