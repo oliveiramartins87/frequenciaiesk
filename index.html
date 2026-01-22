@@ -75,36 +75,33 @@ function enviar() {
 
   msg.textContent = "Enviando...";
 
-  fetch(URL_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      aluno: aluno.value,
-      turma: turma.value,
-      responsavel: responsavel.value,
-      cpf: cpf.value
-    })
-  })
-  .then(r => r.json())
-  .then(d => {
-    if (d.erro) {
-      msg.textContent = "❌ Erro: " + d.erro;
-    } else {
-      msg.innerHTML =
-        "✅ Termo registrado.<br>" +
-        "<a href='" + d.pdf + "' target='_blank'>Abrir PDF</a>";
-    }
-  })
-  .catch(err => {
-    msg.textContent = "❌ Erro ao enviar.";
-    console.error(err);
+  const params = new URLSearchParams({
+    aluno: aluno.value,
+    turma: turma.value,
+    responsavel: responsavel.value,
+    cpf: cpf.value
   });
+
+  fetch(URL_API + "?" + params.toString())
+    .then(r => r.json())
+    .then(d => {
+      if (d.erro) {
+        msg.textContent = "❌ Erro: " + d.erro;
+      } else {
+        msg.innerHTML =
+          "✅ Termo registrado.<br>" +
+          "<a href='" + d.pdf + "' target='_blank'>Abrir PDF</a>";
+      }
+    })
+    .catch(err => {
+      msg.textContent = "❌ Erro ao enviar.";
+      console.error(err);
+    });
 }
 </script>
 
 </body>
 </html>
+
 
 
