@@ -101,7 +101,7 @@ button:disabled { opacity: .6; }
   <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
   <input id="turma" placeholder="Turma" oninput="validar()">
   <input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
-  <input id="cpf" placeholder="CPF (opcional)">
+  <input id="cpf" placeholder="CPF (obrigatório)">
 
   <label>
     <input type="checkbox" id="ciente" onchange="validar()"> Li e estou ciente
@@ -124,7 +124,7 @@ button:disabled { opacity: .6; }
   <p>O termo foi registrado no sistema da escola.</p>
 </div>
 <script>
-const URL_API = "https://script.google.com/macros/s/AKfycbztfIzRFbNvuvaL94xt0Us5GORn3udCohzF91w6ISIcnp8uEIQ184PeVufDMql8YxKe3Q/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbw7FminS0L3xfmwU8EPmQZcQtC86RWrT29Le-15WXyY82lCDxi_nosE02cRanRmN3ktpQ/exec";
 
 const urlParams = new URLSearchParams(window.location.search);
 const TOKEN = urlParams.get("token");
@@ -204,6 +204,7 @@ if (sessionStorage.getItem("termoEnviado") === "true") {
 
 </body>
 </html>
+
 
 
 
