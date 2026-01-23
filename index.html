@@ -83,13 +83,11 @@ button:disabled { opacity: .6; }
 
 <body>
 
-<!-- FORM -->
 <div class="box" id="formBox">
   <h2>📄 Termo de Ciência de Frequência Escolar</h2>
 
   <div class="termo">
     <p>Declaro ciência da frequência escolar do(a) aluno(a).</p>
-    <p>Estou ciente das normas da instituição e da legislação vigente.</p>
     <p><strong>
       Estou ciente de que a permanência do aluno em condição de infrequência
       poderá acarretar encaminhamento ao Conselho Tutelar, reprovação por
@@ -98,10 +96,10 @@ button:disabled { opacity: .6; }
     <p>Este termo é aceito digitalmente.</p>
   </div>
 
-  <input id="aluno" placeholder="Nome do aluno" oninput="validar()">
-  <input id="turma" placeholder="Turma" oninput="validar()">
-  <input id="responsavel" placeholder="Nome do responsável" oninput="validar()">
-  <input id="cpf" placeholder="CPF (obrigatório)">
+  <input id="aluno" placeholder="Nome do aluno" oninput="validar()" required>
+  <input id="turma" placeholder="Turma" oninput="validar()" required>
+  <input id="responsavel" placeholder="Nome do responsável" oninput="validar()" required>
+  <input id="cpf" placeholder="CPF (obrigatório)" required>
 
   <label>
     <input type="checkbox" id="ciente" onchange="validar()"> Li e estou ciente
@@ -112,19 +110,18 @@ button:disabled { opacity: .6; }
   </button>
 </div>
 
-<!-- LOADING -->
 <div class="box loading" id="loadingBox">
   <div class="spinner"></div>
   <p>Enviando documento…</p>
 </div>
 
-<!-- SUCESSO -->
 <div class="box sucesso" id="sucessoBox">
   <h2>✅ Documento enviado com sucesso</h2>
   <p>O termo foi registrado no sistema da escola.</p>
 </div>
+
 <script>
-const URL_API = "https://script.google.com/macros/s/AKfycbw7FminS0L3xfmwU8EPmQZcQtC86RWrT29Le-15WXyY82lCDxi_nosE02cRanRmN3ktpQ/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbzcfGVexfufCNuIy4RZeOx19UUdyBP0so0nOOoB9zKJjBVCMYt4zVGUy8jEc--LIG5Gsg/exec";
 
 const urlParams = new URLSearchParams(window.location.search);
 const TOKEN = urlParams.get("token");
@@ -134,28 +131,17 @@ if (!TOKEN) {
   throw new Error("Token não informado");
 }
 
-/* BLOQUEIO GLOBAL */
-function bloquearVoltar() {
-  history.replaceState(null, null, location.href);
-  window.onpopstate = () => history.go(1);
-}
-
-/* VALIDA */
 function validar() {
   btnEnviar.disabled = !(
     aluno.value.trim() &&
     turma.value.trim() &&
     responsavel.value.trim() &&
+    cpf.value.trim() &&
     ciente.checked
   );
 }
 
-/* ENVIO */
 async function enviar() {
-
-  sessionStorage.setItem("termoEnviado", "true");
-  bloquearVoltar();
-
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
@@ -169,16 +155,14 @@ async function enviar() {
   };
 
   try {
-    const resposta = await fetch(URL_API, {
+    const res = await fetch(URL_API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    const json = await resposta.json();
-
+    const json = await res.json();
     loadingBox.style.display = "none";
 
     if (!json.ok) {
@@ -187,23 +171,15 @@ async function enviar() {
     }
 
     sucessoBox.style.display = "block";
-    bloquearVoltar();
-
   } catch (e) {
     document.body.innerHTML = "<h2>❌ Erro ao enviar o termo</h2>";
   }
-}
-
-/* AO CARREGAR */
-if (sessionStorage.getItem("termoEnviado") === "true") {
-  formBox.style.display = "none";
-  sucessoBox.style.display = "block";
-  bloquearVoltar();
 }
 </script>
 
 </body>
 </html>
+
 
 
 
