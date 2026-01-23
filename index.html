@@ -11,6 +11,7 @@
   --azul-claro: #3b82f6;
 }
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -19,8 +20,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  padding: 14px;
 }
+
 .box {
   background: #fff;
   max-width: 520px;
@@ -29,45 +31,73 @@ body {
   border-radius: 18px;
   box-shadow: 0 20px 40px rgba(0,0,0,.2);
 }
-h2 { text-align: center; }
+
+h2 {
+  text-align: center;
+  font-size: 20px;
+}
+
 .termo {
   border: 1px solid #e5e7eb;
   padding: 14px;
   border-radius: 12px;
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
   font-size: 14px;
   line-height: 1.6;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  background: #f9fafb;
 }
+
 input {
   width: 100%;
-  padding: 14px;
-  margin: 8px 0;
-  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0;
+  border-radius: 14px;
   border: 1px solid #d1d5db;
+  font-size: 16px;
 }
-label {
+
+input:focus {
+  outline: none;
+  border-color: var(--azul-claro);
+}
+
+label.ciente {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+  font-size: 15px;
+  text-align: center;
 }
+
+label.ciente input {
+  width: 20px;
+  height: 20px;
+}
+
 button {
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   background: var(--azul);
   color: #fff;
   border: none;
-  border-radius: 14px;
-  font-size: 16px;
-  margin-top: 15px;
+  border-radius: 16px;
+  font-size: 17px;
+  margin-top: 16px;
 }
-button:disabled { opacity: .6; }
+
+button:disabled {
+  opacity: .6;
+}
+
 .loading, .sucesso {
   display: none;
   text-align: center;
 }
+
 .spinner {
   width: 60px;
   height: 60px;
@@ -77,7 +107,10 @@ button:disabled { opacity: .6; }
   animation: spin 1s linear infinite;
   margin: 30px auto;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -99,10 +132,22 @@ button:disabled { opacity: .6; }
   <input id="aluno" placeholder="Nome do aluno" oninput="validar()" required>
   <input id="turma" placeholder="Turma" oninput="validar()" required>
   <input id="responsavel" placeholder="Nome do responsável" oninput="validar()" required>
-  <input id="cpf" placeholder="CPF (obrigatório)" required>
 
-  <label>
-    <input type="checkbox" id="ciente" onchange="validar()"> Li e estou ciente
+  <!-- CPF obrigatório -->
+  <input
+    id="cpf"
+    placeholder="CPF (obrigatório)"
+    required
+    inputmode="numeric"
+    pattern="[0-9]{11}"
+    title="Digite apenas os 11 números do CPF"
+    oninput="this.value=this.value.replace(/\\D/g,''); validar();"
+  >
+
+  <!-- Checkbox centralizado -->
+  <label class="ciente">
+    <input type="checkbox" id="ciente" onchange="validar()">
+    Li e estou ciente
   </label>
 
   <button id="btnEnviar" onclick="enviar()" disabled>
@@ -113,11 +158,6 @@ button:disabled { opacity: .6; }
 <div class="box loading" id="loadingBox">
   <div class="spinner"></div>
   <p>Enviando documento…</p>
-</div>
-
-<div class="box sucesso" id="sucessoBox">
-  <h2>✅ Documento enviado com sucesso</h2>
-  <p>O termo foi registrado no sistema da escola.</p>
 </div>
 
 <script>
@@ -136,13 +176,12 @@ function validar() {
     aluno.value.trim() &&
     turma.value.trim() &&
     responsavel.value.trim() &&
-    cpf.value.trim() &&
+    cpf.value.length === 11 &&
     ciente.checked
   );
 }
 
 function enviar() {
-
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
@@ -174,6 +213,7 @@ function enviar() {
 
 </body>
 </html>
+
 
 
 
