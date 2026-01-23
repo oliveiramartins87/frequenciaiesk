@@ -93,7 +93,7 @@ button:disabled {
   opacity: .6;
 }
 
-.loading, .sucesso {
+.loading {
   display: none;
   text-align: center;
 }
@@ -133,18 +133,16 @@ button:disabled {
   <input id="turma" placeholder="Turma" oninput="validar()" required>
   <input id="responsavel" placeholder="Nome do responsável" oninput="validar()" required>
 
-  <!-- CPF obrigatório -->
+  <!-- CPF com máscara -->
   <input
     id="cpf"
     placeholder="CPF (obrigatório)"
     required
     inputmode="numeric"
-    pattern="[0-9]{11}"
-    title="Digite apenas os 11 números do CPF"
-    oninput="this.value=this.value.replace(/\\D/g,''); validar();"
+    maxlength="14"
+    oninput="mascaraCPF(this); validar();"
   >
 
-  <!-- Checkbox centralizado -->
   <label class="ciente">
     <input type="checkbox" id="ciente" onchange="validar()">
     Li e estou ciente
@@ -171,12 +169,23 @@ if (!TOKEN) {
   throw new Error("Token ausente");
 }
 
+function mascaraCPF(campo) {
+  let v = campo.value.replace(/\D/g, "");
+  if (v.length > 11) v = v.slice(0, 11);
+
+  v = v.replace(/(\d{3})(\d)/, "$1.$2");
+  v = v.replace(/(\d{3})(\d)/, "$1.$2");
+  v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+  campo.value = v;
+}
+
 function validar() {
   btnEnviar.disabled = !(
     aluno.value.trim() &&
     turma.value.trim() &&
     responsavel.value.trim() &&
-    cpf.value.length === 11 &&
+    cpf.value.replace(/\D/g,'').length === 11 &&
     ciente.checked
   );
 }
@@ -194,7 +203,7 @@ function enviar() {
     aluno: aluno.value,
     turma: turma.value,
     responsavel: responsavel.value,
-    cpf: cpf.value,
+    cpf: cpf.value.replace(/\D/g,''), // envia só números
     dispositivo: navigator.userAgent
   };
 
@@ -213,6 +222,7 @@ function enviar() {
 
 </body>
 </html>
+
 
 
 
