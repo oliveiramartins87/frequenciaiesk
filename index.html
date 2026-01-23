@@ -123,9 +123,16 @@ button:disabled { opacity: .6; }
   <h2>✅ Documento enviado com sucesso</h2>
   <p>O termo foi registrado no sistema da escola.</p>
 </div>
-
 <script>
-const URL_API = "https://script.google.com/macros/s/AKfycbyOT3qQzKRHboSnUvPiQzauXNBHaHeR9gZdYShfKSGEiwy-zJa9KnD8fKbXa7yq39TYfg/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycbywMVYmSZvRytNMou5bZZDc8YUa28t5NjCHj4k3DHDe5GjevFPGqC83zKVYd78NdszOMg/exec";
+
+const urlParams = new URLSearchParams(window.location.search);
+const TOKEN = urlParams.get("token");
+
+if (!TOKEN) {
+  document.body.innerHTML = "<h2>❌ Link inválido</h2>";
+  throw new Error("Token não informado");
+}
 
 /* BLOQUEIO GLOBAL */
 function bloquearVoltar() {
@@ -144,7 +151,7 @@ function validar() {
 }
 
 /* ENVIO */
-function enviar() {
+async function enviar() {
 
   sessionStorage.setItem("termoEnviado", "true");
   bloquearVoltar();
@@ -152,20 +159,39 @@ function enviar() {
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
-  const params = new URLSearchParams({
+  const payload = {
+    token: TOKEN,
     aluno: aluno.value,
     turma: turma.value,
     responsavel: responsavel.value,
     cpf: cpf.value,
     dispositivo: navigator.userAgent
-  });
+  };
 
-  setTimeout(() => {
+  try {
+    const resposta = await fetch(URL_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const json = await resposta.json();
+
     loadingBox.style.display = "none";
+
+    if (!json.ok) {
+      document.body.innerHTML = `<h2>❌ ${json.mensagem}</h2>`;
+      return;
+    }
+
     sucessoBox.style.display = "block";
     bloquearVoltar();
-    window.location.href = URL_API + "?" + params.toString();
-  }, 1200);
+
+  } catch (e) {
+    document.body.innerHTML = "<h2>❌ Erro ao enviar o termo</h2>";
+  }
 }
 
 /* AO CARREGAR */
@@ -178,6 +204,7 @@ if (sessionStorage.getItem("termoEnviado") === "true") {
 
 </body>
 </html>
+
 
 
 
