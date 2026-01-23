@@ -58,6 +58,13 @@ input {
   font-size: 16px;
 }
 
+/* 🔠 Caixa alta */
+#aluno,
+#turma,
+#responsavel {
+  text-transform: uppercase;
+}
+
 input:focus {
   outline: none;
   border-color: var(--azul-claro);
@@ -189,8 +196,16 @@ function validar() {
     ciente.checked
   );
 }
+function forcarCaixaAlta() {
+  aluno.value = aluno.value.toUpperCase();
+  turma.value = turma.value.toUpperCase();
+  responsavel.value = responsavel.value.toUpperCase();
+}
 
 function enviar() {
+
+  forcarCaixaAlta(); // 🔠 AQUI
+
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
@@ -222,6 +237,7 @@ function enviar() {
 
 </body>
 </html>
+
 
 
 
