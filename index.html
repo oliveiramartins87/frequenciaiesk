@@ -123,12 +123,12 @@ button:disabled { opacity: .6; }
 <script>
 const URL_API = "https://script.google.com/macros/s/AKfycbzcfGVexfufCNuIy4RZeOx19UUdyBP0so0nOOoB9zKJjBVCMYt4zVGUy8jEc--LIG5Gsg/exec";
 
-const urlParams = new URLSearchParams(window.location.search);
-const TOKEN = urlParams.get("token");
+const params = new URLSearchParams(window.location.search);
+const TOKEN = params.get("token");
 
 if (!TOKEN) {
   document.body.innerHTML = "<h2>❌ Link inválido</h2>";
-  throw new Error("Token não informado");
+  throw new Error("Token ausente");
 }
 
 function validar() {
@@ -141,11 +141,16 @@ function validar() {
   );
 }
 
-async function enviar() {
+function enviar() {
+
   formBox.style.display = "none";
   loadingBox.style.display = "block";
 
-  const payload = {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = URL_API;
+
+  const campos = {
     token: TOKEN,
     aluno: aluno.value,
     turma: turma.value,
@@ -154,31 +159,22 @@ async function enviar() {
     dispositivo: navigator.userAgent
   };
 
-  try {
-    const res = await fetch(URL_API, {
-      method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const json = await res.json();
-    loadingBox.style.display = "none";
-
-    if (!json.ok) {
-      document.body.innerHTML = `<h2>❌ ${json.mensagem}</h2>`;
-      return;
-    }
-
-    sucessoBox.style.display = "block";
-  } catch (e) {
-    document.body.innerHTML = "<h2>❌ Erro ao enviar o termo</h2>";
+  for (const nome in campos) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = nome;
+    input.value = campos[nome];
+    form.appendChild(input);
   }
+
+  document.body.appendChild(form);
+  form.submit();
 }
 </script>
 
 </body>
 </html>
+
 
 
 
