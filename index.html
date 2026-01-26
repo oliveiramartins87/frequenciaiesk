@@ -202,7 +202,42 @@ function forcarCaixaAlta() {
   turma.value = turma.value.toUpperCase();
   responsavel.value = responsavel.value.toUpperCase();
 }
+function identificarDispositivo() {
+  const ua = navigator.userAgent;
 
+  let tipo = "Dispositivo não identificado";
+  let sistema = "";
+  let navegador = "";
+
+  // 📱 Tipo / Sistema
+  if (/Android/i.test(ua)) {
+    tipo = "Celular";
+    sistema = "Android";
+  } else if (/iPhone/i.test(ua)) {
+    tipo = "Celular";
+    sistema = "iOS (iPhone)";
+  } else if (/iPad/i.test(ua)) {
+    tipo = "Tablet";
+    sistema = "iOS (iPad)";
+  } else if (/Windows/i.test(ua)) {
+    tipo = "Computador";
+    sistema = "Windows";
+  } else if (/Macintosh/i.test(ua)) {
+    tipo = "Computador";
+    sistema = "macOS";
+  } else if (/Linux/i.test(ua)) {
+    tipo = "Computador";
+    sistema = "Linux";
+  }
+
+  // 🌐 Navegador
+  if (/Chrome/i.test(ua)) navegador = "Google Chrome";
+  else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) navegador = "Safari";
+  else if (/Edge/i.test(ua)) navegador = "Microsoft Edge";
+  else if (/Firefox/i.test(ua)) navegador = "Mozilla Firefox";
+
+  return `${tipo} | Sistema: ${sistema} | Navegador: ${navegador}`;
+}
 function enviar() {
 
   forcarCaixaAlta(); // 🔠 AQUI
@@ -220,7 +255,7 @@ function enviar() {
     turma: turma.value,
     responsavel: responsavel.value,
     cpf: cpf.value.replace(/\D/g,''), // envia só números
-    dispositivo: navigator.userAgent
+    dispositivo: identificarDispositivo()
   };
 
   for (const nome in campos) {
@@ -238,6 +273,7 @@ function enviar() {
 
 </body>
 </html>
+
 
 
 
